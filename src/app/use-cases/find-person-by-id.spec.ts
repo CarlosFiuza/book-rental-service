@@ -25,7 +25,7 @@ describe('Find person by id', () => {
 
   it('Should not be able to find non existing person', async () => {
     expect(async () => {
-      return await findById.execute({ id: 'non existing' });
+      await findById.execute({ id: 'non existing' });
     }).rejects.toThrow(PersonNotFound);
   });
 });
