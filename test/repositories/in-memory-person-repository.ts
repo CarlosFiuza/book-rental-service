@@ -24,6 +24,7 @@ export default class InMemPersonRepository implements PersonRepository {
   }
   async findManyByProps(prop: IManyByProps): Promise<Person[] | null> {
     const persons = this.persons.filter((p) => {
+      if (!p.isActive) return false;
       if (prop.cpf) return p.cpf.includes(prop.cpf);
       if (prop.name) return p.name.includes(prop.name);
       return true;
@@ -33,6 +34,6 @@ export default class InMemPersonRepository implements PersonRepository {
     return persons;
   }
   async list(): Promise<Person[]> {
-    return this.persons;
+    return this.persons.filter((p) => p.isActive);
   }
 }

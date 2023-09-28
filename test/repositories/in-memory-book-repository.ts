@@ -20,6 +20,6 @@ export default class InMemBookRepository implements BookRepository {
     }
   }
   async list(): Promise<Book[]> {
-    return this.books;
+    return this.books.filter((b) => b.isActive);
   }
 }

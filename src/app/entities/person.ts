@@ -74,4 +74,8 @@ export class Person {
   public desactivate() {
     this.props.isActive = false;
   }
+
+  public get isActive() {
+    return this.props.isActive;
+  }
 }

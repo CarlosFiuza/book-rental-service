@@ -60,4 +60,8 @@ export class Book {
   public desactivate() {
     this.props.isActive = false;
   }
+
+  public get isActive() {
+    return this.props.isActive;
+  }
 }

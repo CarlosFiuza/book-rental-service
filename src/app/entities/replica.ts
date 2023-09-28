@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Replace } from '@helpers/replace';
 
-export interface IReplica {
+export interface IReplicaProps {
   bookId: string;
   createdAt: Date;
   isActive: boolean;
@@ -9,10 +9,10 @@ export interface IReplica {
 
 export class Replica {
   private _id: string;
-  private props: IReplica;
+  private props: IReplicaProps;
 
   constructor(
-    props: Replace<IReplica, { createdAt?: Date; isActive?: boolean }>,
+    props: Replace<IReplicaProps, { createdAt?: Date; isActive?: boolean }>,
     id?: string,
   ) {
     this._id = id ?? randomUUID();
@@ -37,5 +37,9 @@ export class Replica {
 
   public desactivate() {
     this.props.isActive = false;
+  }
+
+  public get isActive() {
+    return this.props.isActive;
   }
 }

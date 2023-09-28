@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Replace } from '@helpers/replace';
 
-export interface IRent {
+export interface IRentProps {
   personId: string;
   replicaId: string;
   createdAt: Date;
@@ -12,11 +12,11 @@ export interface IRent {
 
 export class Rent {
   private _id: string;
-  private props: IRent;
+  private props: IRentProps;
 
   constructor(
     props: Replace<
-      IRent,
+      IRentProps,
       {
         createdAt?: Date;
         modifiedAt?: Date;
@@ -44,7 +44,7 @@ export class Rent {
   }
 
   public get personId(): string {
-    return String(this.personId);
+    return String(this.props.personId);
   }
 
   public set replicaId(replicaId: string) {
@@ -79,5 +79,9 @@ export class Rent {
     const returnDate: Date = this.props.returnedAt ?? new Date();
 
     return returnDate.getTime() > this.props.expectedReturnAt.getTime();
+  }
+
+  public get isActive() {
+    return this.props.isActive;
   }
 }
