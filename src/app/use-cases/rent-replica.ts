@@ -1,7 +1,10 @@
 import { Rent } from '@app/entities/rent';
 import { RentRepository } from '@app/repositories/rent-repository';
 import { Injectable } from '@nestjs/common';
-import { ExceededNumLateReturns } from './errors/rent-errors';
+import {
+  ExceededNumLateReturns,
+  ReplicaNotAvailabeToRent,
+} from './errors/rent-errors';
 
 interface IRentReplicaRequest {
   personId: string;
@@ -12,7 +15,7 @@ interface IRentReplicaRequest {
   expectedReturnAt: Date;
 }
 
-interface IRentRelicaResponse {
+interface IRentReplicaResponse {
   rent: Rent;
 }
 
@@ -20,8 +23,15 @@ interface IRentRelicaResponse {
 export class RentReplica {
   constructor(private rentRepository: RentRepository) {}
 
-  async execute(request: IRentReplicaRequest): Promise<IRentRelicaResponse> {
-    const { personId } = request;
+  async execute(request: IRentReplicaRequest): Promise<IRentReplicaResponse> {
+    const { personId, replicaId } = request;
+
+    const replicaAvailable =
+      await this.rentRepository.isReplicaAvailableToRent(replicaId);
+
+    if (!replicaAvailable) {
+      throw new ReplicaNotAvailabeToRent();
+    }
 
     const limitLateReturns: number = 2;
 

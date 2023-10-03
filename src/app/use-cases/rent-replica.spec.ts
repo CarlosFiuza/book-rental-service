@@ -1,7 +1,10 @@
 import { makeRent } from '@test/factories/rent-factory';
 import { InMemRentRepository } from '@test/repositories/in-memory-rent-repository';
 import { RentReplica } from './rent-replica';
-import { ExceededNumLateReturns } from './errors/rent-errors';
+import {
+  ExceededNumLateReturns,
+  ReplicaNotAvailabeToRent,
+} from './errors/rent-errors';
 import { randomUUID } from 'node:crypto';
 
 describe('Rent replica', () => {
@@ -36,5 +39,16 @@ describe('Rent replica', () => {
     expect(
       async () => await rentReplica.execute(makeRent({ personId })),
     ).rejects.toThrow(ExceededNumLateReturns);
+  });
+
+  it('Should not be able to rent a replica that is already rented', async () => {
+    const rent = makeRent();
+    await rentRepository.create(rent);
+
+    const anotherRent = makeRent({ replicaId: rent.replicaId });
+
+    expect(async () => await rentReplica.execute(anotherRent)).rejects.toThrow(
+      ReplicaNotAvailabeToRent,
+    );
   });
 });

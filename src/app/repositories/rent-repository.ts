@@ -8,4 +8,5 @@ export abstract class RentRepository {
   abstract findByReplicasId(replicasId: string[]): Promise<Rent[]>;
   abstract list(): Promise<Rent[]>;
   abstract countLateReturns(personId: string): Promise<number>;
+  abstract isReplicaAvailableToRent(replicaId: string): Promise<boolean>;
 }

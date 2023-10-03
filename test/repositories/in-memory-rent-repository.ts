@@ -37,4 +37,11 @@ export class InMemRentRepository implements RentRepository {
 
     return lateReturns.length;
   }
+  async isReplicaAvailableToRent(replicaId: string): Promise<boolean> {
+    const notAvailable = this.rents.some(
+      (r) => r.replicaId === replicaId && !r.returnedAt && r.isActive,
+    );
+
+    return !notAvailable;
+  }
 }

@@ -31,7 +31,7 @@ export class Rent {
       ...props,
       createdAt: props.createdAt ?? new Date(),
       isActive: props.isActive === false ? false : true,
-      returnedAt: props.returnedAt ?? new Date(),
+      returnedAt: props.returnedAt ?? null,
     };
   }
 
@@ -61,6 +61,10 @@ export class Rent {
 
   public get expectedReturnAt(): Date {
     return new Date(this.props.expectedReturnAt);
+  }
+
+  public get returnedAt() {
+    return this.props.returnedAt ? new Date(this.props.returnedAt) : null;
   }
 
   public returned() {
