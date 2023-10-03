@@ -1,5 +1,11 @@
 import { Rent } from '@app/entities/rent';
 
+type DelayedBooksPerDate = {
+  month: string;
+  year: number;
+  info: string;
+};
+
 export abstract class RentRepository {
   abstract create(rent: Rent): Promise<void>;
   abstract findById(rentId: string): Promise<Rent | null>;
@@ -9,4 +15,8 @@ export abstract class RentRepository {
   abstract list(): Promise<Rent[]>;
   abstract countLateReturns(personId: string): Promise<number>;
   abstract isReplicaAvailableToRent(replicaId: string): Promise<boolean>;
+  abstract mostDelayedBooksPerMonth(
+    initialYear?: number,
+    finalYear?: number,
+  ): Promise<DelayedBooksPerDate[]>;
 }

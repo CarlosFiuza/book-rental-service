@@ -88,4 +88,8 @@ export class Rent {
   public get isActive() {
     return this.props.isActive;
   }
+
+  public get createdAt() {
+    return new Date(this.props.createdAt);
+  }
 }
