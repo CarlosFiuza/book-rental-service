@@ -1,7 +1,7 @@
 import { RentRepository } from '@app/repositories/rent-repository';
 import { Injectable } from '@nestjs/common';
 
-interface IMostDelayedBooksPerMonthRequest {
+interface IMostDelayedBooksByMonthRequest {
   initialYear?: number;
   finalYear?: number;
 }
@@ -11,7 +11,7 @@ type DelayedInfo = {
   num?: number;
 };
 
-type BooksPerYear = {
+type BooksByYear = {
   year: number;
   jan?: DelayedInfo[];
   fev?: DelayedInfo[];
@@ -27,30 +27,30 @@ type BooksPerYear = {
   dez?: DelayedInfo[];
 };
 
-interface IMostDelayedBooksPerMonthResponse {
-  statistic: BooksPerYear[];
+interface IMostDelayedBooksByMonthResponse {
+  statistic: BooksByYear[];
 }
 
 @Injectable()
-export class MostDelayedBooksPerMonth {
+export class MostDelayedBooksByMonth {
   constructor(private rentRepository: RentRepository) {}
 
   async execute(
-    request: IMostDelayedBooksPerMonthRequest,
-  ): Promise<IMostDelayedBooksPerMonthResponse> {
+    request: IMostDelayedBooksByMonthRequest,
+  ): Promise<IMostDelayedBooksByMonthResponse> {
     const { initialYear, finalYear } = request;
 
-    const data = await this.rentRepository.mostDelayedBooksPerMonth(
+    const data = await this.rentRepository.mostDelayedBooksByMonth(
       initialYear,
       finalYear,
     );
 
-    const response: IMostDelayedBooksPerMonthResponse = {
+    const response: IMostDelayedBooksByMonthResponse = {
       statistic: [],
     };
 
     let yearAux: number = 0;
-    let bookPerYear: BooksPerYear = { year: 0 };
+    let bookPerYear: BooksByYear = { year: 0 };
     for (const monthInfo of data) {
       const { year, month, info } = monthInfo;
       if (yearAux === 0) {

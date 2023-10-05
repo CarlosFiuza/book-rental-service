@@ -45,7 +45,7 @@ export class InMemRentRepository implements RentRepository {
     return !notAvailable;
   }
 
-  async mostDelayedBooksPerMonth(
+  async mostDelayedBooksByMonth(
     initialYear?: number | undefined,
     finalYear?: number | undefined,
   ): Promise<{ month: string; year: number; info: string }[]> {

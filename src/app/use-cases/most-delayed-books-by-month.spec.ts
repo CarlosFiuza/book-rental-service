@@ -1,18 +1,18 @@
 import { InMemRentRepository } from '@test/repositories/in-memory-rent-repository';
-import { MostDelayedBooksPerMonth } from './most-delayed-books-per-month';
+import { MostDelayedBooksByMonth } from './most-delayed-books-by-month';
 import { randomUUID } from 'crypto';
 import { makeRent } from '@test/factories/rent-factory';
 
-describe('Most delayed books per month', () => {
+describe('Most delayed books by month', () => {
   let rentRepository: InMemRentRepository;
-  let mostDelayedBooksPerMonth: MostDelayedBooksPerMonth;
+  let mostDelayedBooksByMonth: MostDelayedBooksByMonth;
 
   beforeEach(() => {
     rentRepository = new InMemRentRepository();
-    mostDelayedBooksPerMonth = new MostDelayedBooksPerMonth(rentRepository);
+    mostDelayedBooksByMonth = new MostDelayedBooksByMonth(rentRepository);
   });
 
-  it('Should be able to return statistics about delayed books per month', async () => {
+  it('Should be able to return statistics about delayed books by month', async () => {
     const replicaId1 = randomUUID();
     const replicaId2 = randomUUID();
     const replicaId3 = randomUUID();
@@ -103,7 +103,7 @@ describe('Most delayed books per month', () => {
       }),
     );
 
-    const { statistic } = await mostDelayedBooksPerMonth.execute({});
+    const { statistic } = await mostDelayedBooksByMonth.execute({});
 
     expect(rentRepository.rents).toHaveLength(9);
     expect(statistic.at(0)?.year).toEqual(2022);
