@@ -148,4 +148,112 @@ export class InMemRentRepository implements RentRepository {
 
     return response;
   }
+
+  async mostRentedBooksByAddress(
+    initialYear?: number | undefined,
+    finalYear?: number | undefined,
+  ): Promise<{ month: string; year: number; info: string }[]> {
+    const rents = this.rents.filter((r) => {
+      const valid = r.isActive;
+      if (initialYear || finalYear) {
+        const year = r.createdAt.getFullYear();
+        const validInitial = initialYear ?? year;
+        const validFinal = finalYear ?? year;
+        return (
+          r.isActive &&
+          r.isReturnDelayed() &&
+          year >= validInitial &&
+          year <= validFinal
+        );
+      }
+
+      return valid;
+    });
+
+    //here I am going to retrive most rented books by personId,
+    //instead use Person entity to group books br address
+
+    const monthStr = {
+      1: 'jan',
+      2: 'fev',
+      3: 'mar',
+      4: 'abr',
+      5: 'mai',
+      6: 'jun',
+      7: 'jul',
+      8: 'ago',
+      9: 'sep',
+      10: 'oct',
+      11: 'nov',
+      12: 'dez',
+    };
+
+    type RentedByAddress = {
+      address: string;
+      bookTitle: string;
+      num: number;
+    };
+
+    type RentedByMonth = {
+      month: string;
+      year: number;
+      rents: RentedByAddress[];
+    };
+
+    const rentedByMonth: RentedByMonth[] = [];
+
+    for (const r of rents) {
+      const month: string = monthStr[r.createdAt.getMonth() + 1];
+      const year = r.createdAt.getFullYear();
+
+      let rbm = rentedByMonth.find(
+        (rbm) => rbm.month === month && rbm.year === year,
+      );
+
+      if (!rbm) {
+        rbm = {
+          month,
+          year,
+          rents: [],
+        };
+        rentedByMonth.push(rbm);
+      }
+
+      let address = rbm.rents.find((rent) => rent.address === r.personId);
+      if (!address) {
+        address = {
+          address: r.personId,
+          bookTitle: r.replicaId,
+          num: 1,
+        };
+        rbm.rents.push(address);
+      } else {
+        address.num = address.num + 1;
+      }
+    }
+
+    const response: { month: string; year: number; info: string }[] = [];
+    for (const rbm of rentedByMonth) {
+      const mostRentedOrdered = rbm.rents.sort(({ num: a }, { num: b }) =>
+        a > b ? -1 : a < b ? 1 : 0,
+      );
+
+      const infoA: Array<string> = [];
+      let index: number = 0;
+      for (const rent of mostRentedOrdered) {
+        if (index > 2) break;
+        infoA.push(`${rent.address}|${rent.bookTitle}|${rent.num}`);
+        index++;
+      }
+
+      const info = infoA.join(';');
+      response.push({
+        month: rbm.month,
+        year: rbm.year,
+        info,
+      });
+    }
+
+    return response;
+  }
 }
